@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import projekt1.filecontent.FileContent;
 import projekt1.logger.Logger;
 import projekt1.readout.ReadOut;
@@ -15,12 +13,13 @@ import projekt1.readout.ReadoutWithUuid;
 import projekt1.sensor.Sensor;
 
 public class IOHelper {
+
     static String delimiter1 = " ";
     static String delimiter2 = " id:";
 
     public static FileContent readFile(String filePath, Logger logger) throws IOException {
         Sensor dummySensor = new Sensor("<N/A>");
-        List<Sensor> sensors = new ArrayList<>();
+        ArrayList<Sensor> sensors = new ArrayList<>();
         sensors.add(dummySensor);
         BufferedReader reader = new BufferedReader(new FileReader(filePath));
         int noOfInvalidRecords = 0;
@@ -52,7 +51,7 @@ public class IOHelper {
         return new FileContent(sensors, noOfInvalidRecords);
     }
 
-    public static void addReadOutToSensor(List<Sensor> sensorList, String sensorName, ReadOut readout) {
+    public static void addReadOutToSensor(ArrayList<Sensor> sensorList, String sensorName, ReadOut readout) {
         for (Sensor sensor : sensorList) {
             if (sensor.getName().equals(sensorName)) {
                 sensor.addReadout(readout);
@@ -65,18 +64,17 @@ public class IOHelper {
         sensorList.add(newSensor);
     }
 
-
     public static String getOutputInfo(FileContent fContent, String title) {
         StringBuilder output = new StringBuilder();
+        output.append("Marcel Golab, 285300\n\n");        
+        output.append(title).append("\n");
         for (Sensor sensor : fContent.getSensors()) {
             double mean = sensor.getMean();
             Optional<ReadOut> max = sensor.getMax();
             Optional<ReadOut> min = sensor.getMin();
-            output.append(title).append("\n");
             output.append("--------------------------------\n");
             output.append("Sensor name: ").append(sensor.getName());
-            output.append("\n--------------------------------\n");
-            output.append("Marcel Golab, 285300\n");
+            output.append("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
             output.append("Length of the series: ").append(String.format("%d", sensor.getLengthOfData())).append("\n");
             max.ifPresent(readOut -> output.append("Max value: ").append(readOut).append("\n"));
             min.ifPresent(readOut -> output.append("Min value: ").append(readOut).append("\n"));
@@ -86,6 +84,7 @@ public class IOHelper {
                 output.append("Number of central elements: ").append(String.format("%d", sensor.noOfCentralElements(mean, (max.get().getValue() - min.get().getValue()) / 100))).append("\n");
             }
         }
+        output.append("--------------------------------\n");
         output.append("Number of invalid records: ").append(String.format("%d", fContent.getNoOfInvalidRecords())).append("\n");
         return output.toString();
     }

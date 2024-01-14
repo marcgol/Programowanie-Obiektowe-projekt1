@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import projekt1.medianwrapper.MedianWrapper;
 import projekt1.readout.ReadOut;
 
 public class Sensor {
 
     private final String name;
-    private final List<ReadOut> data;
+    private final ArrayList<ReadOut> data;
 
     public Sensor(String name) {
         this.data = new ArrayList<>();
@@ -47,10 +46,14 @@ public class Sensor {
     }
 
     public MedianWrapper getMedian() {
+        Collections.sort(data);
         if (data.size() % 2 == 0) {
-            return new MedianWrapper(new ReadOut((data.get(data.size() / 2 - 1).getValue() + data.get(data.size() / 2).getValue()) / 2));
+            ReadOut elem1 = data.get(data.size() / 2);
+            ReadOut elem2 = data.get(data.size() / 2 - 1);
+            return new MedianWrapper(elem1, elem2);
         } else {
-            return new MedianWrapper(new ReadOut(data.get(data.size() / 2).getValue()));
+            ReadOut elem = data.get(data.size() / 2);
+            return new MedianWrapper(elem);
         }
     }
 
@@ -63,6 +66,5 @@ public class Sensor {
         }
         return count;
     }
-
 
 }
