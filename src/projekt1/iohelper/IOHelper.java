@@ -23,11 +23,18 @@ public class IOHelper {
         while ((line = reader.readLine()) != null) {
             try {
                 if (line.contains("id:")) {
-                    String[] parts = line.split(" id:", 2);
+                    String delimiter1 = " ";
+                    String delimiter2 = " id:";
+                    line = line.replaceAll(delimiter2, delimiter1);
+                    String[] parts = line.split(delimiter1, 3);
                     uuid = parts[1].trim();
                     double value = Double.parseDouble(parts[0].trim());
                     ReadoutWithUuid readoutuuid = new ReadoutWithUuid(value, uuid);
-                    dummySensor.addReadout(readoutuuid);
+                    if (parts.length > 2) {
+                        addReadOutToSensor(sensors, parts[2], readoutuuid);
+                    } else {
+                        dummySensor.addReadout(readoutuuid);
+                    }
                 } else {
                     ReadOut rdata = new ReadOut(Double.parseDouble(line));
                     dummySensor.addReadout(rdata);
@@ -41,6 +48,18 @@ public class IOHelper {
         return new FileContent(sensors, noOfInvalidRecords);
     }
     
+    public static void addReadOutToSensor(ArrayList<Sensor> sensorList, String sensorName, ReadOut readout) {
+        for (Sensor sensor : sensorList) {
+            if (sensor.getName().equals(sensorName)) {
+                sensor.addReadout(readout);
+            } else {
+                Sensor newSensor = new Sensor(sensorName);
+                newSensor.addReadout(readout);
+                sensorList.add(newSensor);                
+            }
+        }
+    }
+        
     public static String getOutputInfo(FileContent fContent, String title) {
         ArrayList<Sensor> sensors = fContent.getSensors();
         String output = "";
@@ -50,6 +69,8 @@ public class IOHelper {
             ReadOut min = sensor.getMin();
             output += title + "\n";
             output += "--------------------------------\n";
+            output += "Sensor name: " + sensor.getName();
+            output += "\n--------------------------------\n";            
             output += "Marcel Golab, 285300\n";
             output += "Length of the series: " + String.format("%d", sensor.getLengthOfData()) + "\n";
             output += "Max value: " + max.toString() + "\n";
