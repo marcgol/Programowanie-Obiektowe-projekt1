@@ -1,7 +1,7 @@
 package projekt1.readout;
 
 public class ReadoutWithUuid extends ReadOut{
-    private String uuid;
+    private final String uuid;
     
     public ReadoutWithUuid(double value, String uuid){
         super(value);

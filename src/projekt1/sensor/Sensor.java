@@ -2,35 +2,40 @@ package projekt1.sensor;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import projekt1.medianwrapper.MedianWrapper;
 import projekt1.readout.ReadOut;
 
 public class Sensor {
-    
-    private String name;
-    private ArrayList<ReadOut> data=new ArrayList<>();
-    
-    public Sensor(String name){
-        this.name=name;
+
+    private final String name;
+    private final List<ReadOut> data;
+
+    public Sensor(String name) {
+        this.data = new ArrayList<>();
+        this.name = name;
     }
-    
+
     public String getName() {
         return name;
     }
-    
-    public int getLengthOfData(){
+
+    public int getLengthOfData() {
         return data.size();
     }
-    
-    public void addReadout(ReadOut readout){
-        data.add(readout);  
-    }
-    public ReadOut getMax() {
-        return Collections.max(data);
+
+    public void addReadout(ReadOut readout) {
+        data.add(readout);
     }
 
-    public ReadOut getMin() {
-        return Collections.min(data);
+    public Optional<ReadOut> getMax() {
+        return data.stream().max(ReadOut::compareTo);
+    }
+
+    public Optional<ReadOut> getMin() {
+        return data.stream().min(ReadOut::compareTo);
     }
 
     public double getMean() {
@@ -42,15 +47,10 @@ public class Sensor {
     }
 
     public MedianWrapper getMedian() {
-        Collections.sort(data);
-        int size = data.size();
-        if (size % 2 == 0) {
-            ReadOut elem1 = data.get(size / 2);
-            ReadOut elem2 = data.get(size / 2 - 1);
-            return new MedianWrapper(elem1, elem2);
+        if (data.size() % 2 == 0) {
+            return new MedianWrapper(new ReadOut((data.get(data.size() / 2 - 1).getValue() + data.get(data.size() / 2).getValue()) / 2));
         } else {
-            ReadOut elem = data.get(size / 2);
-            return new MedianWrapper(elem);
+            return new MedianWrapper(new ReadOut(data.get(data.size() / 2).getValue()));
         }
     }
 
