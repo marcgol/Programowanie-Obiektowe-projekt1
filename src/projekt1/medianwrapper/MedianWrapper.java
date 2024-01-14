@@ -4,17 +4,19 @@ import java.util.ArrayList;
 import projekt1.readout.ReadOut;
 
 public class MedianWrapper {
-    private ArrayList<ReadOut> medianElems = new ArrayList<>();
-    private double medianVal;
+    private final ArrayList<ReadOut> medianElems;
+    private final double medianVal;
     
     //the case of the odd length
     public MedianWrapper(ReadOut elem) {
+        this.medianElems = new ArrayList<>();
         medianElems.add(elem);
         medianVal=elem.getValue();
     }
     
     //the case of the even length
     public MedianWrapper(ReadOut elem1, ReadOut elem2) {
+        this.medianElems = new ArrayList<>();
         if (elem1.getValue() < elem2.getValue()) { //sort the elements
         medianElems.add(elem1);
         medianElems.add(elem2);

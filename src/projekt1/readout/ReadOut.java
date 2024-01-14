@@ -1,7 +1,7 @@
 package projekt1.readout;
 
 public class ReadOut implements Comparable<ReadOut>{
-    private double value;
+    private final double value;
     
     public ReadOut(double value){
         this.value = value;

@@ -1,19 +1,23 @@
 package projekt1.filecontent;
 
 import java.util.ArrayList;
+import java.util.List;
+
 import projekt1.sensor.Sensor;
 
 public class FileContent {
-    private ArrayList<Sensor> sensors;
-    private int noOfInvalidRecords;
-    
-    public FileContent(ArrayList<Sensor> sensors, int noOfInvalidRecords){
-        this.sensors=sensors;
-        this.noOfInvalidRecords=noOfInvalidRecords;
+    private final List<Sensor> sensors;
+    private final int noOfInvalidRecords;
+
+    public FileContent(List<Sensor> sensors, int noOfInvalidRecords) {
+        this.sensors = sensors;
+        this.noOfInvalidRecords = noOfInvalidRecords;
     }
-    public ArrayList<Sensor> getSensors() {
-        return sensors;
+
+    public List<Sensor> getSensors() {
+        return sensors.stream().filter(s -> s.getLengthOfData() != 0).toList();
     }
+
     public int getNoOfInvalidRecords() {
         return noOfInvalidRecords;
     }
