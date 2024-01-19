@@ -4,10 +4,10 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import projekt1.filecontent.FileContent;
 import projekt1.logger.Logger;
+import projekt1.medianwrapper.MedianWrapper;
 import projekt1.readout.ReadOut;
 import projekt1.readout.ReadoutWithUuid;
 import projekt1.sensor.Sensor;
@@ -66,22 +66,24 @@ public class IOHelper {
 
     public static String getOutputInfo(FileContent fContent, String title) {
         StringBuilder output = new StringBuilder();
-        output.append("Marcel Golab, 285300\n\n");        
+        output.append("Marcel Golab, 285300\n\n");
+        output.append("Numbers of sensors: ").append(fContent.getSensors().size()).append("\n");
         output.append(title).append("\n");
         for (Sensor sensor : fContent.getSensors()) {
-            double mean = sensor.getMean();
+            Optional<Double> mean = sensor.getMean();
             Optional<ReadOut> max = sensor.getMax();
             Optional<ReadOut> min = sensor.getMin();
+            Optional<MedianWrapper> median = sensor.getMedian();
             output.append("--------------------------------\n");
             output.append("Sensor name: ").append(sensor.getName());
             output.append("\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n");
             output.append("Length of the series: ").append(String.format("%d", sensor.getLengthOfData())).append("\n");
             max.ifPresent(readOut -> output.append("Max value: ").append(readOut).append("\n"));
             min.ifPresent(readOut -> output.append("Min value: ").append(readOut).append("\n"));
-            output.append("Mean value: ").append(String.format("%.3f", mean)).append("\n");
-            output.append("Median: ").append(sensor.getMedian().toString()).append("\n");
+            mean.ifPresent(Double -> output.append("Mean value: ").append(String.format("%.3f", Double)).append("\n"));
+            median.ifPresent(MedianWrapper -> output.append("Median: ").append(MedianWrapper).append("\n"));
             if (max.isPresent() && min.isPresent()) {
-                output.append("Number of central elements: ").append(String.format("%d", sensor.noOfCentralElements(mean, (max.get().getValue() - min.get().getValue()) / 100))).append("\n");
+                output.append("Number of central elements: ").append(String.format("%d", sensor.noOfCentralElements(mean.get(), (max.get().getValue() - min.get().getValue()) / 100))).append("\n");
             }
         }
         output.append("--------------------------------\n");

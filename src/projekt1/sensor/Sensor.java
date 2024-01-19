@@ -2,7 +2,6 @@ package projekt1.sensor;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import projekt1.medianwrapper.MedianWrapper;
 import projekt1.readout.ReadOut;
@@ -37,23 +36,30 @@ public class Sensor {
         return data.stream().min(ReadOut::compareTo);
     }
 
-    public double getMean() {
+    public Optional<Double> getMean() {
+        if (data.isEmpty()) {
+            return Optional.empty();
+        }
         double sum = 0;
         for (ReadOut num : data) {
             sum += num.getValue();
         }
-        return sum / data.size();
+        return Optional.of(sum / data.size());
     }
 
-    public MedianWrapper getMedian() {
+
+    public Optional<MedianWrapper> getMedian() {
+        if (data.isEmpty()) {
+            return Optional.empty();
+        }
         Collections.sort(data);
         if (data.size() % 2 == 0) {
             ReadOut elem1 = data.get(data.size() / 2);
             ReadOut elem2 = data.get(data.size() / 2 - 1);
-            return new MedianWrapper(elem1, elem2);
+            return Optional.of(new MedianWrapper(elem1, elem2));
         } else {
             ReadOut elem = data.get(data.size() / 2);
-            return new MedianWrapper(elem);
+            return Optional.of(new MedianWrapper(elem));
         }
     }
 
@@ -65,6 +71,6 @@ public class Sensor {
             }
         }
         return count;
-    }
+    } 
 
 }

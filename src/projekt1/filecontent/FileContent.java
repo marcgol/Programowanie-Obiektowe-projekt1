@@ -1,7 +1,6 @@
 package projekt1.filecontent;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import projekt1.sensor.Sensor;
